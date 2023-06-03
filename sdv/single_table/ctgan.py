@@ -64,7 +64,8 @@ class CTGANSynthesizer(BaseSingleTableSynthesizer):
                  embedding_dim=128, generator_dim=(256, 256), discriminator_dim=(256, 256),
                  generator_lr=2e-4, generator_decay=1e-6, discriminator_lr=2e-4,
                  discriminator_decay=1e-6, batch_size=500, discriminator_steps=1,
-                 log_frequency=True, verbose=False, epochs=300, pac=10, cuda=True):
+                 log_frequency=True, verbose=False, epochs=300, pac=10, cuda=True,
+                 parallel=True):
 
         super().__init__(
             metadata=metadata,
@@ -87,6 +88,7 @@ class CTGANSynthesizer(BaseSingleTableSynthesizer):
         self.epochs = epochs
         self.pac = pac
         self.cuda = cuda
+        self.parallel = parallel
 
         self._model_kwargs = {
             'embedding_dim': embedding_dim,
@@ -103,6 +105,7 @@ class CTGANSynthesizer(BaseSingleTableSynthesizer):
             'epochs': epochs,
             'pac': pac,
             'cuda': cuda
+            'parallel': parallel
         }
 
     def _fit(self, processed_data):
@@ -115,6 +118,8 @@ class CTGANSynthesizer(BaseSingleTableSynthesizer):
         discrete_columns = detect_discrete_columns(self.get_metadata(), processed_data)
         self._model = CTGAN(**self._model_kwargs)
         self._model.fit(processed_data, discrete_columns=discrete_columns)
+        if self.parallel:
+            self_model.model = nn.DataParallel(self._model.model)
 
     def _sample(self, num_rows, conditions=None):
         """Sample the indicated number of rows from the model.
