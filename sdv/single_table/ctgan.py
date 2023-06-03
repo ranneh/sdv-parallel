@@ -1,7 +1,8 @@
 """Wrapper around CTGAN model."""
 
+import torch
+from torch import nn
 from ctgan import CTGAN, TVAE
-
 from sdv.single_table.base import BaseSingleTableSynthesizer
 from sdv.single_table.utils import detect_discrete_columns
 
