@@ -105,7 +105,7 @@ class CTGANSynthesizer(BaseSingleTableSynthesizer):
             'verbose': verbose,
             'epochs': epochs,
             'pac': pac,
-            'cuda': cuda
+            'cuda': cuda,
             'parallel': parallel
         }
 
