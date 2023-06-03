@@ -120,7 +120,7 @@ class CTGANSynthesizer(BaseSingleTableSynthesizer):
         self._model = CTGAN(**self._model_kwargs)
         self._model.fit(processed_data, discrete_columns=discrete_columns)
         if self.parallel:
-            self_model.model = nn.DataParallel(self._model.model)
+            self._model.model = nn.DataParallel(self._model.model)
 
     def _sample(self, num_rows, conditions=None):
         """Sample the indicated number of rows from the model.
